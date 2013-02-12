@@ -1,3 +1,5 @@
+import os
+
 from bottle import request, route, run
 
 import twilio.twiml
@@ -10,8 +12,8 @@ token = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Twilio Auth Token
 fromNum = "+15005550006"  # Twilio number to call from
 toNum = "+15005550009"  # Number to call (can be non-Twilio number)
 
-dns = "twilio.webserver.com"  # replace with your webserver name
-port = 8080
+dns = "0.0.0.0"  # replace with your webserver name
+port = os.environ.get("PORT", 5000)
 webserver = "http://" + dns + ":" + str(port) + "/"
 smsReceivedCallback = webserver + "smsReceived"
 callConnectedCallback = webserver + "callConnected"
