@@ -19,27 +19,27 @@ twilioNumber = "+15005550006"  # Twilio number to call from
 onHeroku = False
 if 'PORT' in os.environ:
     onHeroku = True
-    port = os.environ("PORT", 5000)
+    port = os.environ.get("PORT", 5000)
 
 if 'HOST' in os.environ:
     onHeroku = True
-    host = os.environ("HOST", "0.0.0.0")
+    host = os.environ.get("HOST", "0.0.0.0")
 
 if "DNS" in os.environ:
     onHeroku = True
-    dns = os.environ("DNS", "www.example.com")
+    dns = os.environ.get("DNS", "www.example.com")
 
 if "TWILIO_ACCT" in os.environ:
     onHeroku = True
-    account = os.environ("TWILIO_ACCT","nothing")
+    account = os.environ.get("TWILIO_ACCT","nothing")
 
 if "TWILIO_TOKEN" is os.environ:
     onHeroku = True
-    token = os.environ("TWILIO_TOKEN","none")
+    token = os.environ.get("TWILIO_TOKEN","none")
 
 if "TWILIO_NUMBER" is os.environ:
     onHeroku = True
-    twilioNumber = os.environ("TWILIO_NUMBER","+15005550006")
+    twilioNumber = os.environ.get("TWILIO_NUMBER","+15005550006")
 
 
 webserver = "http://" + dns + ":" + str(port) + "/"

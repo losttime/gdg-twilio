@@ -10,6 +10,7 @@
 #
 # Your config variables should now be set on heroku, ready to use.
 
+heroku config:add HOST=0.0.0.0
 heroku config:add DNS=www.example.com
 heroku config:add TWILIO_ACCT=ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 heroku config:add TWILIO_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
