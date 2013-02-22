@@ -9,12 +9,11 @@ host = "localhost"
 port = 8080
 dns = "localhost"
 
+# Only set these if not setting the environment variables
 # To find these visit https://www.twilio.com/user/account
 account = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Twilio Account SID
 token = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Twilio Auth Token
-
 twilioNumber = "+15005550006"  # Twilio number to call from
-#toNum = "+15005550009"  # Number to call (can be non-Twilio number)
 
 onHeroku = False
 if 'PORT' in os.environ:
@@ -31,15 +30,15 @@ if "DNS" in os.environ:
 
 if "TWILIO_ACCT" in os.environ:
     onHeroku = True
-    account = os.environ.get("TWILIO_ACCT","nothing")
+    account = os.environ.get("TWILIO_ACCT", "nothing")
 
 if "TWILIO_TOKEN" is os.environ:
     onHeroku = True
-    token = os.environ.get("TWILIO_TOKEN","none")
+    token = os.environ.get("TWILIO_TOKEN", "none")
 
 if "TWILIO_NUMBER" is os.environ:
     onHeroku = True
-    twilioNumber = os.environ.get("TWILIO_NUMBER","+15005550006")
+    twilioNumber = os.environ.get("TWILIO_NUMBER", "+15005550006")
 
 
 webserver = "http://" + dns + ":" + str(port) + "/"
@@ -59,7 +58,7 @@ def sms_send():
     fromNum = postData.fromNum
     body = postData.body
     client = TwilioRestClient(account, token)
-    #message = client.sms.messages.create(to=toNum, from_=fromNum, body=body)
+    message = client.sms.messages.create(to=toNum, from_=fromNum, body=body)
     return {"froms":[{"number":fromNum}],"message":"text message was sent"}
 
 @route('/smsReceived', method='POST')
