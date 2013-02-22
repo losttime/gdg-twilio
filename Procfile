@@ -1,1 +1,1 @@
-web: python phase2/callbackServer.py
+web: python server.py
