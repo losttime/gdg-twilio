@@ -1,6 +1,8 @@
 import os
+import sys
+sys.path.append("./modules")
 
-from bottle import request, route, run, view
+from bottle.bottle import Bottle, request, route, run, view
 
 import twilio.twiml
 from twilio.rest import TwilioRestClient
@@ -16,6 +18,7 @@ token = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Twilio Auth Token
 twilioNumber = "+15005550006"  # Twilio number to call from
 
 onHeroku = False
+onGAE = False
 if 'PORT' in os.environ:
     onHeroku = True
     port = os.environ.get("PORT", 5000)
@@ -32,25 +35,29 @@ if "TWILIO_ACCT" in os.environ:
     onHeroku = True
     account = os.environ.get("TWILIO_ACCT", "nothing")
 
-if "TWILIO_TOKEN" is os.environ:
+if "TWILIO_TOKEN" in os.environ:
     onHeroku = True
     token = os.environ.get("TWILIO_TOKEN", "none")
 
-if "TWILIO_NUMBER" is os.environ:
+if "TWILIO_NUMBER" in os.environ:
     onHeroku = True
     twilioNumber = os.environ.get("TWILIO_NUMBER", "+15005550006")
 
+if "USING_GAE" in os.environ:
+    onGAE = True
 
 webserver = "http://" + dns + ":" + str(port) + "/"
 smsReceivedCallback = webserver + "smsReceived"
 callConnectedCallback = webserver + "callConnected"
 
-@route('/')
+app = Bottle()
+
+@app.route('/')
 @view('smsForm')
 def index():
     return {"froms":[{"number":twilioNumber}],"message":None}
     
-@route('/smsSend', method='POST')
+@app.route('/smsSend', method='POST')
 @view('smsForm')
 def sms_send():
     postData = request.forms
@@ -61,7 +68,7 @@ def sms_send():
     message = client.sms.messages.create(to=toNum, from_=fromNum, body=body)
     return {"froms":[{"number":fromNum}],"message":"text message was sent"}
 
-@route('/smsReceived', method='POST')
+@app.route('/smsReceived', method='POST')
 def sms_received():
     # should probably do some sort of validation here
     words = request.forms.Body.split()
@@ -70,8 +77,8 @@ def sms_received():
     client = TwilioRestClient(account, token)
     call = client.calls.create(to=toNum, from_=fromNum, url=callback)
 
-@route('/callConnected', method='POST')
-@route('/callConnected', method='GET')  # useful for testing
+@app.route('/callConnected', method='POST')
+@app.route('/callConnected', method='GET')  # useful for testing
 def call_connected():
     # should probably do some sort of validation here too
     url = request.query.playbackUrl
@@ -79,4 +86,7 @@ def call_connected():
     xml += '<Response><Play>' + url + '</Play></Response>'
     return xml
 
-run(host=host, port=port)
+if onGAE:
+    run(app=app, server='gae')
+else:
+    run(app=app, host=host, port=port)
