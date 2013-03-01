@@ -1,12 +1,23 @@
 import os
 import sys
-sys.path.append("./modules")
 
-from bottle.bottle import Bottle, request, route, run, view
+# check if this is running on Google App Engine
+onGAE = False
+if "USING_GAE" in os.environ:
+    onGAE = True
+
+if onGAE:
+    sys.path.append("./modules")
+
+# import modules not supported by Google App Engine
+# If running on Google App engine, will import from local "modules" directory
+from bottle import Bottle, request, route, run, view
 
 import twilio.twiml
 from twilio.rest import TwilioRestClient
 
+
+# Continue with the rest of the configuration
 host = "localhost"
 port = 8080
 dns = "localhost"
@@ -18,7 +29,6 @@ token = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Twilio Auth Token
 twilioNumber = "+15005550006"  # Twilio number to call from
 
 onHeroku = False
-onGAE = False
 if 'PORT' in os.environ:
     onHeroku = True
     port = os.environ.get("PORT", 5000)
@@ -43,15 +53,14 @@ if "TWILIO_NUMBER" in os.environ:
     onHeroku = True
     twilioNumber = os.environ.get("TWILIO_NUMBER", "+15005550006")
 
-if "USING_GAE" in os.environ:
-    onGAE = True
-
 webserver = "http://" + dns + ":" + str(port) + "/"
 smsReceivedCallback = webserver + "smsReceived"
 callConnectedCallback = webserver + "callConnected"
 
 app = Bottle()
 
+
+# Define the routes that allow the app to function
 @app.route('/')
 @view('smsForm')
 def index():
@@ -86,6 +95,8 @@ def call_connected():
     xml += '<Response><Play>' + url + '</Play></Response>'
     return xml
 
+
+# Run the app
 if onGAE:
     run(app=app, server='gae')
 else:
