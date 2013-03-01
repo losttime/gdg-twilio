@@ -45,3 +45,29 @@ How To Run (heroku)
   - Something like http://xxxxxxx-xxxxxxx-####.herokuapp.com/smsReceived
 7. Point your browser to your app to send an SMS message.
   - Something like http://xxxxxxx-xxxxxxx-####.herokuapp.com/
+
+How To Run (Google App Engine)
+------------------------------
+1. Create a new Google App Engine app
+2. Copy the following module dependencies in to the `modules/` directory
+  - These should take the structure:
+
+    modules/
+      --httplib2/
+        --(all the stuff in the httplib2 module)
+      --twilio/
+        --(all the stuff in the twilio module)
+      --bottle.py
+      --six.py
+
+3. Update `app.yaml` with the name of your Google App Engine app
+4. Configure variables in server.py according to your setup
+  - webserver information (host, port, dns) is not needed
+  - Twilio information (account, token, phone number) is needed
+5. Configure your Twilio SMS Request URL to point to your Google App Engine domain at http://appname.appspot.com/smsReceived.
+6. Deploy your app to Google App Engine
+
+    appcfg.py update appname/
+
+7. Point your browser to your app to send an SMS message.
+  - Something like http://xxxxxxxx.appspot.com/
