@@ -1,13 +1,7 @@
 gdg-twilio
 ==========
 
-This code was developed as part of a coding challenge that took place at the GDG Utah meeting on February 7, 2013. We were asked to complete a series of tasks utilizing the Twilio API and upload our code to GitHub
-
-Phase 1 - Send a specific SMS message to a specific telephone number
-
-Phase 2 - Send a specific SMS message to a specific telephone number. Parse the SMS response and extract the URL. Initiate a phone call with a second specific telephone number and play back the audio file found at the URL optained from the SMS response.
-
-I'm trying to become more familiar with Python, so I chose to use it for these tasks.
+This code was developed as part of a coding challenge that took place at the [GDG Utah](https://plus.google.com/u/0/111917982940065392922) meeting on February 7, 2013. We were asked to complete a series of tasks utilizing the Twilio API and upload our code to GitHub. The code has since been modified to easily deploy to [heroku](http://www.heroku.com/).
 
 Dependencies
 ------------
@@ -18,33 +12,36 @@ Dependencies
 Requirements
 ------------
 - A Twilio account.
-- A way to run python scripts (local machine, virtual machine, remote server, etc).
-- A web accessible server capable of running python scripts (for Phase 2 only).
-  - Code has been modified to deploy easily to [heroku](http://www.heroku.com/).
+- A web accessible server capable of running python scripts.
+  - Code has been refactored for easy deployment to heroku.
 
 How To Run (general)
 --------------------
-Phase 1 - Replace the dummy values with your own and run the script.
-
-Phase 2
-- Configure your Twilio SMS Request URL to point to your webserver at http://www.example.com/smsReceived.
-- Replace the dummy values in both scripts with valid Twilio credentials and server information.
-- Upload `callbackServer.py` to a web server and run it, making sure it's publicly accessible.
-- Run `sendSms.py` from the web server or your local machine.
+1. Configure variables in server.py according to your setup
+  - webserver information (host, port, dns)
+  - Twilio information (account, token, phone number)
+2. Configure your Twilio SMS Request URL to point to your webserver at http://www.example.com/smsReceived.
+3. Upload `server.py` to a webserver and run it, making sure it's publicly accessible.
+4. Point your browser to your webserver to send an SMS message.
+  - Something like http://www.example.com/
 
 How To Run (heroku)
 -------------------
-Phase 2 (only) - 
-- You still need to configure your Twilio SMS Request URL and replace the dummy values in both scripts. Then commit your changes. This is not a secure way of storing your credentials, so only commit this code if you are willing to give out access to your Twilio account or your code will never be shared.
+1. Create a new heroku app.
+2. Copy `set_configs_sample.sh` to `set_configs.sh`
+3. Modify the variables in `set_configs.sh` to match your setup
+  - HOST should likely be 0.0.0.0
+  - DNS should be the domain for your new heroku app
+  - The rest should match your Twilio account information
+4. Run `set_configs.sh` to set your heroku app's environment variables
 
-    $ git commit -a
-
-- Create a new heroku app
-
-    $ heroku create
+    $ ./set_configs.sh
     
-- Push the app to heroku
+5. Push your app to heroku
 
     $ git push heroku master
-
-The initial texting script (`sendSms.py`) still needs to be run from a command line (likely on your local machine), but the the app on heroku will handle the rest.
+    
+6. Configure your Twilio SMS Request URL to point to your app
+  - Something like http://xxxxxxx-xxxxxxx-####.herokuapp.com/smsReceived
+7. Point your browser to your app to send an SMS message.
+  - Something like http://xxxxxxx-xxxxxxx-####.herokuapp.com/
